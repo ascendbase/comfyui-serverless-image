@@ -1,11 +1,12 @@
 # Minimal ComfyUI Dockerfile for Serverless GPU with Custom Nodes
 FROM python:3.11-slim
 
-# System dependencies - Fixed for Debian compatibility
+# System dependencies - Fixed for Debian compatibility with build tools
 RUN apt-get update && apt-get install -y \
     git \
     wget \
     curl \
+    build-essential \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
