@@ -66,7 +66,7 @@ RUN mkdir -p /workspace/ComfyUI/models/checkpoints \
 WORKDIR /workspace/ComfyUI/models
 
 RUN wget --timeout=60 --tries=3 -O checkpoints/real-dream-15.safetensors "https://huggingface.co/sinatra-rd/sd-1.5-real-dream/resolve/main/real-dream-15.safetensors"
-RUN wget --timeout=60 --tries=3 -O loras/chad_sd1.5.safetensors "https://civitai.com/api/download/models/2416869?type=Model&format=SafeTensor"
+RUN wget --timeout=60 --tries=3 -O loras/chad_sd1.5.safetensors "https://civitai.com/api/download/models/2416904?type=Model&format=SafeTensor"
 RUN wget --timeout=30 --tries=3 -O ultralytics/bbox/face_yolov8m.pt "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8m.pt"
 RUN wget --timeout=30 --tries=3 -O sams/sam_vit_b_01ec64.pth "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
 
