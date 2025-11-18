@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxext6 \
     libgomp1 \
-    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
@@ -22,7 +21,10 @@ RUN git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git
 WORKDIR /workspace/ComfyUI
 RUN pip install -r requirements.txt
 
-# 3. Pre-install ALL required dependencies in CORRECT ORDER
+# 3. Install PyTorch with CUDA support first
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# 4. Install computer vision and ML dependencies from regular PyPI
 RUN pip install --no-cache-dir \
     numpy \
     opencv-python-headless \
@@ -39,20 +41,19 @@ RUN pip install --no-cache-dir \
     yapf \
     scipy \
     matplotlib \
-    pillow \
-    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    pillow
 
-# 4. Install ComfyUI Manager (required infrastructure)
+# 5. Install ComfyUI Manager (required infrastructure)
 WORKDIR /workspace/ComfyUI/custom_nodes
 RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
 
-# 5. Install ComfyUI Impact Pack (main custom node)
+# 6. Install ComfyUI Impact Pack (main custom node)
 RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Impact-Pack.git
 
-# 6. Install ComfyUI Impact Subpack (required dependency)
+# 7. Install ComfyUI Impact Subpack (required dependency)
 RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git
 
-# 7. Create model directories
+# 8. Create model directories
 RUN mkdir -p /workspace/ComfyUI/models/checkpoints \
     /workspace/ComfyUI/models/loras \
     /workspace/ComfyUI/models/ultralytics/bbox \
@@ -60,17 +61,17 @@ RUN mkdir -p /workspace/ComfyUI/models/checkpoints \
     /workspace/ComfyUI/input \
     /workspace/ComfyUI/output
 
-# 8. Download required models
+# 9. Download required models
 WORKDIR /workspace/ComfyUI/models
 
 # Base model (use your custom model)
 RUN wget --timeout=60 --tries=3 -O checkpoints/real-dream-15.safetensors \
-    "https://huggingface.co/SG161222/RealVisXL_V4.0/resolve/main/RealVisXL_V4.0.safetensors" || \
+    "https://huggingface.co/sinatra-rd/sd-1.5-real-dream/resolve/main/real-dream-15.safetensors"
     echo "Failed to download base model"
 
 # LoRA model
 RUN wget --timeout=60 --tries=3 -O loras/chad_sd1.5.safetensors \
-    "https://civitai.com/api/download/models/87153" || \
+    "https://civitai.com/api/download/models/2416869?type=Model&format=SafeTensor"
     echo "Failed to download LoRA"
 
 # Face detection model
@@ -83,7 +84,7 @@ RUN wget --timeout=30 --tries=3 -O sams/sam_vit_b_01ec64.pth \
     "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth" || \
     echo "Failed to download SAM model"
 
-# 9. Go back to ComfyUI root
+# 10. Go back to ComfyUI root
 WORKDIR /workspace/ComfyUI
 
 # Health check
