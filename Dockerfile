@@ -64,25 +64,10 @@ RUN mkdir -p /workspace/ComfyUI/models/checkpoints \
 # 9. Download required models
 WORKDIR /workspace/ComfyUI/models
 
-# Base model (use your custom model)
-RUN wget --timeout=60 --tries=3 -O checkpoints/real-dream-15.safetensors \
-    "https://huggingface.co/sinatra-rd/sd-1.5-real-dream/resolve/main/real-dream-15.safetensors"
-    echo "Failed to download base model"
-
-# LoRA model
-RUN wget --timeout=60 --tries=3 -O loras/chad_sd1.5.safetensors \
-    "https://civitai.com/api/download/models/2416869?type=Model&format=SafeTensor"
-    echo "Failed to download LoRA"
-
-# Face detection model
-RUN wget --timeout=30 --tries=3 -O ultralytics/bbox/face_yolov8m.pt \
-    "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8m.pt" || \
-    echo "Failed to download face detector"
-
-# SAM model for segmentation
-RUN wget --timeout=30 --tries=3 -O sams/sam_vit_b_01ec64.pth \
-    "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth" || \
-    echo "Failed to download SAM model"
+RUN wget --timeout=60 --tries=3 -O checkpoints/real-dream-15.safetensors "https://huggingface.co/sinatra-rd/sd-1.5-real-dream/resolve/main/real-dream-15.safetensors"
+RUN wget --timeout=60 --tries=3 -O loras/chad_sd1.5.safetensors "https://civitai.com/api/download/models/2416869?type=Model&format=SafeTensor"
+RUN wget --timeout=30 --tries=3 -O ultralytics/bbox/face_yolov8m.pt "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8m.pt"
+RUN wget --timeout=30 --tries=3 -O sams/sam_vit_b_01ec64.pth "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
 
 # 10. Go back to ComfyUI root
 WORKDIR /workspace/ComfyUI
